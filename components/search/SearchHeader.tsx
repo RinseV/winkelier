@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { SortOptions } from '../../lib/redux/api/search';
 import { ControlledSelect } from '../form/ControlledSelect';
+import { useSearchContext } from './hooks/useSearchContext';
 
 type FormData = {
     orderBy: {
@@ -12,14 +13,10 @@ type FormData = {
     };
 };
 
-type SearchHeaderProps = {
-    sort: SortOptions;
-    setSort: React.Dispatch<React.SetStateAction<SortOptions>>;
-};
-
-export const SearchHeader: React.VFC<SearchHeaderProps> = ({ sort, setSort }) => {
+export const SearchHeader: React.VFC = () => {
     const router = useRouter();
     const term = router.query.term as string;
+    const { sort, setSort } = useSearchContext();
 
     const { control, watch } = useForm<FormData>({
         defaultValues: {

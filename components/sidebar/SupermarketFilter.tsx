@@ -1,56 +1,38 @@
 import { Checkbox, Stack, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { mapStoreToFilter, StoreFilter } from '../../lib/redux/api/search';
+import { mapStoreToFilter } from '../../lib/redux/api/search';
 import { Store } from '../../pages/api/types';
+import { useSearchContext } from '../search/hooks/useSearchContext';
 
-type Supermarkets = {
+interface StoreChecked {
     store: Store;
     checked: boolean;
-    filter: StoreFilter;
-};
+}
 
-const options: Supermarkets[] = Object.values(Store).map((store) => ({
-    store,
-    checked: true,
-    filter: mapStoreToFilter(store)
-}));
+export const SupermarketFilter: React.VFC = () => {
+    const { storeFilter, addStoreToFilter, removeStoreFromFilter } = useSearchContext();
 
-type SupermarketFilterProps = {
-    filter: StoreFilter[];
-    setFilter: React.Dispatch<React.SetStateAction<StoreFilter[]>>;
-};
-
-export const SupermarketFilter: React.VFC<SupermarketFilterProps> = ({ filter, setFilter }) => {
-    const [checkedItems, setCheckedItems] = useState<Supermarkets[]>(() => {
-        return options.map((option) => ({
-            ...option,
-            checked: !filter.includes(option.filter)
+    const [checkedItems, setCheckedItems] = useState<StoreChecked[]>(() => {
+        return Object.values(Store).map((store) => ({
+            store,
+            checked: !storeFilter.includes(mapStoreToFilter(store))
         }));
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const { checked } = e.target;
-        // Update state for the specific item
+        // If not checked, add to filter, else remove from filter
+        if (!checked) {
+            addStoreToFilter(checkedItems[index].store);
+        } else {
+            removeStoreFromFilter(checkedItems[index].store);
+        }
+        // Update the checked state of the item
         setCheckedItems((prevState) => {
             const newState = [...prevState];
             newState[index].checked = checked;
             return newState;
         });
-        // If not checked, add to filter
-        if (!checked) {
-            setFilter((prevState) => {
-                const newState = [...prevState];
-                newState.push(options[index].filter);
-                return newState;
-            });
-        } else {
-            // If checked, remove from filter
-            setFilter((prevState) => {
-                const newState = [...prevState];
-                newState.splice(newState.indexOf(options[index].filter), 1);
-                return newState;
-            });
-        }
     };
 
     return (
