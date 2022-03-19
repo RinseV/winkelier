@@ -1,15 +1,16 @@
 import { Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
-import { SortOptions, useLazyGetProductsFromTermQuery } from '../../lib/redux/api/search';
+import { SortOptions, StoreFilter, useLazyGetProductsFromTermQuery } from '../../lib/redux/api/search';
 import { LoadingIndicator } from '../common/LoadingIndicator';
 import { Products } from './Products';
 
 type ProductSearchProps = {
     sort: SortOptions;
+    filter: StoreFilter[];
 };
 
-export const ProductSearch: React.VFC<ProductSearchProps> = ({ sort }) => {
+export const ProductSearch: React.VFC<ProductSearchProps> = ({ sort, filter }) => {
     const router = useRouter();
     const term = router.query.term as string;
 
@@ -17,9 +18,9 @@ export const ProductSearch: React.VFC<ProductSearchProps> = ({ sort }) => {
 
     useEffect(() => {
         if (term) {
-            getProducts({ term, sort });
+            getProducts({ term, sort, excludeSupermarkets: filter });
         }
-    }, [term, sort, getProducts]);
+    }, [term, sort, getProducts, filter]);
 
     if (isLoading || isUninitialized || isFetching) {
         return <LoadingIndicator />;

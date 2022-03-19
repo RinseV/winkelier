@@ -7,7 +7,6 @@ import { DarkThemeToggle } from './DarkThemeToggle';
 export const Header: React.VFC = () => {
     return (
         <HStack spacing={8} alignItems="center">
-            <Logo fontSize="5xl" />
             <SearchBar />
             <DarkThemeToggle />
         </HStack>

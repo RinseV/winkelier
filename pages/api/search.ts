@@ -41,6 +41,26 @@ const mapAHProductToCommonProduct = (product: AHProductModel): CommonProduct => 
     };
 };
 
+const filterSupermarket = (products: CommonProduct[], excludeSupermarkets?: string): CommonProduct[] => {
+    // Default is all
+    if (!excludeSupermarkets) {
+        return products;
+    }
+    let result = products;
+    // Split supermarkets into array
+    const supermarkets = excludeSupermarkets.split(',');
+    // Filter products
+    if (supermarkets.includes('jumbo')) {
+        // Exclude products from Jumbo
+        result = products.filter((product) => product.store !== Store.JUMBO);
+    }
+    if (supermarkets.includes('ah')) {
+        // Exclude products from Albert Heijn
+        result = products.filter((product) => product.store !== Store.ALBERT_HEIJN);
+    }
+    return result;
+};
+
 const sortProducts = (products: CommonProduct[], sort?: string): CommonProduct[] => {
     // Default is price ascending
     let result = products;
@@ -67,9 +87,12 @@ const sortProducts = (products: CommonProduct[], sort?: string): CommonProduct[]
 export default async function handler(req: NextApiRequest, res: NextApiResponse<CommonProduct[]>) {
     const term = req.query.term as string;
     const sort = req.query.sort as string;
+    const excludeSupermarkets = req.query.excludeSupermarkets as string;
     // Merge products
     const commonProducts = await retrieveProducts(term);
+    // Filter products
+    const filteredProducts = filterSupermarket(commonProducts, excludeSupermarkets);
     // Sort products
-    const sortedCommonProducts = sortProducts(commonProducts, sort);
+    const sortedCommonProducts = sortProducts(filteredProducts, sort);
     res.status(200).json(sortedCommonProducts);
 }
