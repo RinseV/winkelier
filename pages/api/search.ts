@@ -1,9 +1,17 @@
 import { AH } from 'albert-heijn-wrapper';
 import { Jumbo } from 'jumbo-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { mapAHProductToCommonProduct, translateDietToAHDiets } from '../../lib/helpers/ah';
-import { mapJumboProductToCommonProduct, translateDietToJumboDiets } from '../../lib/helpers/jumbo';
-import { CommonProduct, Diet, Store } from './types';
+import {
+    mapAHProductToCommonProduct,
+    translateAllergensToAHAllergens,
+    translateDietToAHDiets
+} from '../../lib/helpers/ah';
+import {
+    mapJumboProductToCommonProduct,
+    translateAllergensToJumboAllergens,
+    translateDietToJumboDiets
+} from '../../lib/helpers/jumbo';
+import { Allergens, CommonProduct, Diet, Store } from './types';
 
 const jumbo = new Jumbo();
 const ah = new AH();
@@ -24,10 +32,10 @@ const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
                 return Diet.VEGAN;
             case 'vegetarian':
                 return Diet.VEGETARIAN;
-            case 'gluten_intolerant':
-                return Diet.GLUTEN_INTOLERANT;
-            case 'lactose_intolerant':
-                return Diet.LACTOSE_INTOLERANT;
+            case 'gluten_free':
+                return Diet.GLUTEN_FREE;
+            case 'lactose_free':
+                return Diet.LACTOSE_FREE;
             case 'low_sugar':
                 return Diet.LOW_SUGAR;
             case 'low_fat':
@@ -40,21 +48,56 @@ const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
     return enums.filter((diet) => diet !== undefined) as Diet[];
 };
 
+// Translates allergens query into list of Allergens to include in the final result
+const translateAllergenQueryToAllergens = (allergenQuery?: string): Allergens[] => {
+    if (!allergenQuery) {
+        return [];
+    }
+    // Split allergens into array
+    const allergens = allergenQuery.split(',');
+    // Translate to enum
+    const enums = allergens.map((allergen) => {
+        switch (allergen) {
+            case 'gluten':
+                return Allergens.GLUTEN;
+            case 'lactose':
+                return Allergens.LACTOSE;
+            case 'dairy':
+                return Allergens.DIARY;
+            case 'soy':
+                return Allergens.SOY;
+            case 'peanuts':
+                return Allergens.PEANUTS;
+            case 'nuts':
+                return Allergens.NUTS;
+            case 'eggs':
+                return Allergens.EGGS;
+            default:
+                return undefined;
+        }
+    });
+    // Only return enums that are defined, otherwise return empty array
+    return enums.filter((allergen) => allergen !== undefined) as Allergens[];
+};
+
 // Retrieves initial products from the stores
 const retrieveProducts = async (
     term: string,
     excludeSupermarkets?: string,
-    diets?: Diet[]
+    diets?: Diet[],
+    allergens?: Allergens[]
 ): Promise<CommonProduct[]> => {
     // Get list of stores to retrieve products from
     const stores = translateExcludeTermToStores(excludeSupermarkets);
     let products: CommonProduct[] = [];
     if (stores.includes(Store.JUMBO)) {
         const jumboDiets = translateDietToJumboDiets(diets);
+        const jumboAllergens = translateAllergensToJumboAllergens(allergens);
         // Retrieve Jumbo products
         try {
             const jumboProducts = await jumbo.product().getProductsFromName(term, 0, 10, {
-                diet: jumboDiets
+                diet: jumboDiets,
+                allergens: jumboAllergens
             });
             products = products.concat(
                 jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
@@ -65,10 +108,11 @@ const retrieveProducts = async (
     }
     if (stores.includes(Store.ALBERT_HEIJN)) {
         const ahDiets = translateDietToAHDiets(diets);
+        const ahAllergens = translateAllergensToAHAllergens(allergens);
         // Retrieve AH products
         try {
             const ahProducts = await ah.product().getProductsFromName(term, {
-                property: ahDiets
+                property: [...ahDiets, ...ahAllergens]
             });
             products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
         } catch (e) {
@@ -142,9 +186,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const sort = req.query.sort as string;
     const excludeSupermarkets = req.query.excludeSupermarkets as string;
     const diet = req.query.diet as string;
+    const allergen = req.query.allergen as string;
     const diets = translateDietQueryToDiet(diet);
+    const allergens = translateAllergenQueryToAllergens(allergen);
     // Merge products
-    const commonProducts = await retrieveProducts(term, excludeSupermarkets, diets);
+    const commonProducts = await retrieveProducts(term, excludeSupermarkets, diets, allergens);
     // Filter products
     const filteredProducts = filterSupermarket(commonProducts, excludeSupermarkets);
     // Sort products

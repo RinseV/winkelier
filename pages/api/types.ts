@@ -7,10 +7,20 @@ export enum Diet {
     ORGANIC = 'organic',
     VEGAN = 'vegan',
     VEGETARIAN = 'vegetarian',
-    GLUTEN_INTOLERANT = 'gluten_intolerant',
-    LACTOSE_INTOLERANT = 'lactose_intolerant',
+    GLUTEN_FREE = 'gluten_free',
+    LACTOSE_FREE = 'lactose_free',
     LOW_SUGAR = 'low_sugar',
     LOW_FAT = 'low_fat'
+}
+
+export enum Allergens {
+    GLUTEN = 'gluten',
+    LACTOSE = 'lactose',
+    DIARY = 'diary',
+    SOY = 'soy',
+    PEANUTS = 'peanuts',
+    NUTS = 'nuts',
+    EGGS = 'eggs'
 }
 
 export type CommonProduct = {

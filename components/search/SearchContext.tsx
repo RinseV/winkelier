@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
-import { DietFilter, mapStoreToFilter, SortOptions, StoreFilter } from '../../lib/redux/api/search';
+import { AllergenFilter, DietFilter, mapStoreToFilter, SortOptions, StoreFilter } from '../../lib/redux/api/search';
 import { Store } from '../../pages/api/types';
 
 export interface SearchContextInterface {
@@ -11,6 +11,9 @@ export interface SearchContextInterface {
     dietFilter: DietFilter[];
     addDietToFilter: (diet: DietFilter) => void;
     removeDietFromFilter: (diet: DietFilter) => void;
+    allergenFilter: AllergenFilter[];
+    addAllergenToFilter: (allergen: AllergenFilter) => void;
+    removeAllergenFromFilter: (allergen: AllergenFilter) => void;
 }
 
 export const SearchContext = createContext<SearchContextInterface>({
@@ -21,13 +24,17 @@ export const SearchContext = createContext<SearchContextInterface>({
     removeStoreFromFilter: () => {},
     dietFilter: [],
     addDietToFilter: () => {},
-    removeDietFromFilter: () => {}
+    removeDietFromFilter: () => {},
+    allergenFilter: [],
+    addAllergenToFilter: () => {},
+    removeAllergenFromFilter: () => {}
 });
 
 export function SearchProvider({ children }: { children: ReactNode }) {
     const [sort, setSort] = useState<SortOptions>('+price');
     const [storeFilter, setStoreFilter] = useState<StoreFilter[]>([]);
     const [dietFilter, setDietFilter] = useState<DietFilter[]>([]);
+    const [allergenFilter, setAllergenFilter] = useState<AllergenFilter[]>([]);
 
     const addStoreToFilter = (store: Store) => {
         const filter = mapStoreToFilter(store);
@@ -47,6 +54,14 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         setDietFilter((prevState) => prevState.filter((d) => d !== diet));
     };
 
+    const addAllergenToFilter = (allergen: AllergenFilter) => {
+        setAllergenFilter((prevState) => [...prevState, allergen]);
+    };
+
+    const removeAllergenFromFilter = (allergen: AllergenFilter) => {
+        setAllergenFilter((prevState) => prevState.filter((a) => a !== allergen));
+    };
+
     return (
         <SearchContext.Provider
             value={{
@@ -57,7 +72,10 @@ export function SearchProvider({ children }: { children: ReactNode }) {
                 removeStoreFromFilter,
                 dietFilter,
                 addDietToFilter,
-                removeDietFromFilter
+                removeDietFromFilter,
+                allergenFilter,
+                addAllergenToFilter,
+                removeAllergenFromFilter
             }}
         >
             {children}

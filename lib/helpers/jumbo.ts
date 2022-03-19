@@ -1,5 +1,5 @@
-import { ProductData, ProductDietFilter, ProductFilter } from 'jumbo-wrapper';
-import { CommonProduct, Diet, Store } from '../../pages/api/types';
+import { ProductAllergenFilter, ProductData, ProductDietFilter } from 'jumbo-wrapper';
+import { Allergens, CommonProduct, Diet, Store } from '../../pages/api/types';
 
 // Translates list of diets to Jumbo-specific diets
 export const translateDietToJumboDiets = (diet?: Diet[]): ProductDietFilter[] => {
@@ -19,10 +19,10 @@ export const translateDietToJumboDiets = (diet?: Diet[]): ProductDietFilter[] =>
             case Diet.VEGETARIAN:
                 diets.push(ProductDietFilter.Vegetarian);
                 break;
-            case Diet.GLUTEN_INTOLERANT:
+            case Diet.GLUTEN_FREE:
                 diets.push(ProductDietFilter.GlutenIntolerant);
                 break;
-            case Diet.LACTOSE_INTOLERANT:
+            case Diet.LACTOSE_FREE:
                 diets.push(ProductDietFilter.LactoseIntolerant);
                 break;
             case Diet.LOW_SUGAR:
@@ -36,6 +36,42 @@ export const translateDietToJumboDiets = (diet?: Diet[]): ProductDietFilter[] =>
         }
     });
     return diets;
+};
+
+// Translates list of allergens to Jumbo-specific allergens
+export const translateAllergensToJumboAllergens = (allergens?: Allergens[]): ProductAllergenFilter[] => {
+    if (!allergens || allergens?.length === 0) {
+        return [];
+    }
+    const allergensToFilter: ProductAllergenFilter[] = [];
+    allergens.forEach((allergen) => {
+        switch (allergen) {
+            case Allergens.GLUTEN:
+                allergensToFilter.push(ProductAllergenFilter.Gluten);
+                break;
+            case Allergens.LACTOSE:
+                allergensToFilter.push(ProductAllergenFilter.Lactose);
+                break;
+            case Allergens.DIARY:
+                allergensToFilter.push(ProductAllergenFilter.Diary);
+                break;
+            case Allergens.SOY:
+                allergensToFilter.push(ProductAllergenFilter.Soy);
+                break;
+            case Allergens.PEANUTS:
+                allergensToFilter.push(ProductAllergenFilter.Peanuts);
+                break;
+            case Allergens.NUTS:
+                allergensToFilter.push(ProductAllergenFilter.Nuts);
+                break;
+            case Allergens.EGGS:
+                allergensToFilter.push(ProductAllergenFilter.Eggs);
+                break;
+            default:
+                break;
+        }
+    });
+    return allergensToFilter;
 };
 
 // Maps Jumbo products to a common product

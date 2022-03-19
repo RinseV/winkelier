@@ -10,15 +10,15 @@ export const ProductSearch: React.VFC = () => {
     const router = useRouter();
     const term = router.query.term as string;
 
-    const { sort, storeFilter, dietFilter } = useSearchContext();
+    const { sort, storeFilter, dietFilter, allergenFilter } = useSearchContext();
 
     const [getProducts, { data, isLoading, isUninitialized, isFetching }] = useLazyGetProductsFromTermQuery();
 
     useEffect(() => {
         if (term) {
-            getProducts({ term, sort, excludeSupermarkets: storeFilter, diets: dietFilter });
+            getProducts({ term, sort, excludeSupermarkets: storeFilter, diet: dietFilter, allergen: allergenFilter });
         }
-    }, [term, sort, getProducts, storeFilter, dietFilter]);
+    }, [term, sort, getProducts, storeFilter, dietFilter, allergenFilter]);
 
     if (isLoading || isUninitialized || isFetching) {
         return <LoadingIndicator />;

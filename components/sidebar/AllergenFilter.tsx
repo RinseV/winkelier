@@ -1,21 +1,21 @@
 import { Checkbox, HStack, Stack, Text, Tooltip } from '@chakra-ui/react';
-import { useState } from 'react';
-import { MdInfoOutline } from 'react-icons/md';
-import { Diet } from '../../pages/api/types';
+import React, { useState } from 'react';
+import { MdInfo, MdInfoOutline } from 'react-icons/md';
+import { Allergens } from '../../pages/api/types';
 import { useSearchContext } from '../search/hooks/useSearchContext';
 
-interface DietChecked {
-    diet: Diet;
+interface AllergenChecked {
+    allergen: Allergens;
     checked: boolean;
 }
 
-export const DietFilter: React.VFC = () => {
-    const { dietFilter, addDietToFilter, removeDietFromFilter } = useSearchContext();
+export const AllergenFilter: React.VFC = () => {
+    const { allergenFilter, addAllergenToFilter, removeAllergenFromFilter } = useSearchContext();
 
-    const [checkedItems, setCheckedItems] = useState<DietChecked[]>(() => {
-        return Object.values(Diet).map((diet) => ({
-            diet,
-            checked: dietFilter.includes(diet)
+    const [checkedItems, setCheckedItems] = useState<AllergenChecked[]>(() => {
+        return Object.values(Allergens).map((allergen) => ({
+            allergen,
+            checked: allergenFilter.includes(allergen)
         }));
     });
 
@@ -23,9 +23,9 @@ export const DietFilter: React.VFC = () => {
         const { checked } = e.target;
         // If checked, add to filter, else remove from filter
         if (checked) {
-            addDietToFilter(checkedItems[index].diet);
+            addAllergenToFilter(checkedItems[index].allergen);
         } else {
-            removeDietFromFilter(checkedItems[index].diet);
+            removeAllergenFromFilter(checkedItems[index].allergen);
         }
         // Update the checked state of the item
         setCheckedItems((prevState) => {
@@ -37,21 +37,21 @@ export const DietFilter: React.VFC = () => {
 
     return (
         <Stack spacing={2}>
-            <Tooltip label="Results will follow these diets">
+            <Tooltip label="Allergens to exclude from results">
                 <HStack spacing={1} alignItems="flex-start">
-                    <Text fontWeight="bold">Diets</Text>
+                    <Text fontWeight="bold">Allergens</Text>
                     <MdInfoOutline />
                 </HStack>
             </Tooltip>
-            {/* Checkbox for every diet */}
+            {/* Checkbox for every allergen */}
             {checkedItems.map((item, index) => (
                 <Checkbox
                     isChecked={checkedItems[index].checked}
-                    key={item.diet}
+                    key={item.allergen}
                     onChange={(e) => handleChange(e, index)}
                 >
                     {/* Replace underscore with space and capitalise first letter */}
-                    {item.diet.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {item.allergen.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
                 </Checkbox>
             ))}
         </Stack>

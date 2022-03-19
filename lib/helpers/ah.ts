@@ -1,5 +1,5 @@
-import { ProductFilter, ProductModel, ProductPropertyFilter } from 'albert-heijn-wrapper';
-import { CommonProduct, Diet, Store } from '../../pages/api/types';
+import { ProductModel, ProductPropertyFilter } from 'albert-heijn-wrapper';
+import { Allergens, CommonProduct, Diet, Store } from '../../pages/api/types';
 
 // Translates list of diets to AH-specific diets
 export const translateDietToAHDiets = (diet?: Diet[]): ProductPropertyFilter[] => {
@@ -18,11 +18,11 @@ export const translateDietToAHDiets = (diet?: Diet[]): ProductPropertyFilter[] =
             case Diet.VEGETARIAN:
                 diets.push(ProductPropertyFilter.Vegeterian);
                 break;
-            case Diet.GLUTEN_INTOLERANT:
+            case Diet.GLUTEN_FREE:
                 // AH makes no distinction between gluten free and gluten intolerant
                 diets.push(ProductPropertyFilter.GlutenFree);
                 break;
-            case Diet.LACTOSE_INTOLERANT:
+            case Diet.LACTOSE_FREE:
                 // AH makes no distinction between lactose free and lactose intolerant
                 diets.push(ProductPropertyFilter.LactoseFree);
                 break;
@@ -37,6 +37,42 @@ export const translateDietToAHDiets = (diet?: Diet[]): ProductPropertyFilter[] =
         }
     });
     return diets;
+};
+
+// Translates list of allergens to AH-specific allergens
+export const translateAllergensToAHAllergens = (allergens?: Allergens[]): ProductPropertyFilter[] => {
+    if (!allergens || allergens?.length === 0) {
+        return [];
+    }
+    const allergensToFilter: ProductPropertyFilter[] = [];
+    allergens.forEach((allergen) => {
+        switch (allergen) {
+            case Allergens.GLUTEN:
+                allergensToFilter.push(ProductPropertyFilter.GlutenFree);
+                break;
+            case Allergens.LACTOSE:
+                allergensToFilter.push(ProductPropertyFilter.LactoseFree);
+                break;
+            case Allergens.DIARY:
+                allergensToFilter.push(ProductPropertyFilter.MilkFree);
+                break;
+            case Allergens.SOY:
+                allergensToFilter.push(ProductPropertyFilter.SoyFree);
+                break;
+            case Allergens.PEANUTS:
+                allergensToFilter.push(ProductPropertyFilter.PeanutFree);
+                break;
+            case Allergens.NUTS:
+                allergensToFilter.push(ProductPropertyFilter.NutFree);
+                break;
+            case Allergens.EGGS:
+                allergensToFilter.push(ProductPropertyFilter.EggFree);
+                break;
+            default:
+                break;
+        }
+    });
+    return allergensToFilter;
 };
 
 // Maps AH products to a common product
