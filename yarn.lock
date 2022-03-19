@@ -2105,10 +2105,10 @@ json5@^1.0.1:
     array-includes "^3.1.3"
     object.assign "^4.1.2"
 
-jumbo-wrapper@^1.0.10:
-  version "1.0.10"
-  resolved "https://registry.yarnpkg.com/jumbo-wrapper/-/jumbo-wrapper-1.0.10.tgz#7174a3f32c6236f09eae4e374ae940785c60b385"
-  integrity sha512-zBGp0FUz14ZVGQ6yG2dKBseRwIDPRYkt8HgjGjDOaugGEK+EZil4SXqhjNBCrKgGGkeDdLwIjn/nHaffh0CJAw==
+jumbo-wrapper@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/jumbo-wrapper/-/jumbo-wrapper-1.1.0.tgz#78e4a1a4e9d10d28b98d01b91807e72345892f1f"
+  integrity sha512-Cdo6jSrKzKP72yhQbTwipP6MfZRPIwsk3OUQNRzVL1gttrC5MOpsWRwQP4GRdg88W/XXmKRhI6LhAkIz0ta95Q==
   dependencies:
     axios "^0.21.1"
     date-fns "^2.17.0"

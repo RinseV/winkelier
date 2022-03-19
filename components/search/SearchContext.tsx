@@ -1,5 +1,5 @@
-import { createContext, ReactNode, useState } from 'react';
-import { mapStoreToFilter, SortOptions, StoreFilter } from '../../lib/redux/api/search';
+import { createContext, ReactNode, useEffect, useState } from 'react';
+import { DietFilter, mapStoreToFilter, SortOptions, StoreFilter } from '../../lib/redux/api/search';
 import { Store } from '../../pages/api/types';
 
 export interface SearchContextInterface {
@@ -8,6 +8,9 @@ export interface SearchContextInterface {
     storeFilter: StoreFilter[];
     addStoreToFilter: (store: Store) => void;
     removeStoreFromFilter: (store: Store) => void;
+    dietFilter: DietFilter[];
+    addDietToFilter: (diet: DietFilter) => void;
+    removeDietFromFilter: (diet: DietFilter) => void;
 }
 
 export const SearchContext = createContext<SearchContextInterface>({
@@ -15,12 +18,16 @@ export const SearchContext = createContext<SearchContextInterface>({
     setSort: () => {},
     storeFilter: [],
     addStoreToFilter: () => {},
-    removeStoreFromFilter: () => {}
+    removeStoreFromFilter: () => {},
+    dietFilter: [],
+    addDietToFilter: () => {},
+    removeDietFromFilter: () => {}
 });
 
 export function SearchProvider({ children }: { children: ReactNode }) {
     const [sort, setSort] = useState<SortOptions>('+price');
     const [storeFilter, setStoreFilter] = useState<StoreFilter[]>([]);
+    const [dietFilter, setDietFilter] = useState<DietFilter[]>([]);
 
     const addStoreToFilter = (store: Store) => {
         const filter = mapStoreToFilter(store);
@@ -32,8 +39,27 @@ export function SearchProvider({ children }: { children: ReactNode }) {
         setStoreFilter((prevState) => prevState.filter((s) => s !== filter));
     };
 
+    const addDietToFilter = (diet: DietFilter) => {
+        setDietFilter((prevState) => [...prevState, diet]);
+    };
+
+    const removeDietFromFilter = (diet: DietFilter) => {
+        setDietFilter((prevState) => prevState.filter((d) => d !== diet));
+    };
+
     return (
-        <SearchContext.Provider value={{ sort, setSort, storeFilter, addStoreToFilter, removeStoreFromFilter }}>
+        <SearchContext.Provider
+            value={{
+                sort,
+                setSort,
+                storeFilter,
+                addStoreToFilter,
+                removeStoreFromFilter,
+                dietFilter,
+                addDietToFilter,
+                removeDietFromFilter
+            }}
+        >
             {children}
         </SearchContext.Provider>
     );

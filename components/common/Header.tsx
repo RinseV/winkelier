@@ -12,9 +12,10 @@ export const Header: React.VFC = () => {
             w="full"
             position="sticky"
             top={0}
-            bg={useColorModeValue('gray.50', 'gray.800')}
+            bg={useColorModeValue('white', 'gray.900')}
             zIndex={1}
-            shadow="sm"
+            boxShadow="0 0.25rem 0.25rem -0.25rem rgba(0, 0, 0, 0.05)"
+            transition="0.2s"
         >
             <HStack spacing={8} alignItems="center">
                 <SearchBar />

@@ -71,6 +71,9 @@ export const theme = extendTheme({
             }
         },
         Checkbox: {
+            baseStyle: {
+                transition: 'all 0.2s'
+            },
             defaultProps: {
                 colorScheme: 'brand'
             }

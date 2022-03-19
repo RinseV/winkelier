@@ -1,55 +1,82 @@
+import { AH } from 'albert-heijn-wrapper';
+import { Jumbo } from 'jumbo-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Jumbo, ProductData as JumboProductData } from 'jumbo-wrapper';
-import { AH, ProductModel as AHProductModel } from 'albert-heijn-wrapper';
-import { CommonProduct, Store } from './types';
+import { mapAHProductToCommonProduct, translateDietToAHDiets } from '../../lib/helpers/ah';
+import { mapJumboProductToCommonProduct, translateDietToJumboDiets } from '../../lib/helpers/jumbo';
+import { CommonProduct, Diet, Store } from './types';
 
 const jumbo = new Jumbo();
 const ah = new AH();
 
+// Translates diet query into list of Diets to include in the final result
+const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
+    if (!dietQuery) {
+        return [];
+    }
+    // Split diets into array
+    const diets = dietQuery.split(',');
+    // Translate to enum
+    const enums = diets.map((diet) => {
+        switch (diet) {
+            case 'organic':
+                return Diet.ORGANIC;
+            case 'vegan':
+                return Diet.VEGAN;
+            case 'vegetarian':
+                return Diet.VEGETARIAN;
+            case 'gluten_intolerant':
+                return Diet.GLUTEN_INTOLERANT;
+            case 'lactose_intolerant':
+                return Diet.LACTOSE_INTOLERANT;
+            case 'low_sugar':
+                return Diet.LOW_SUGAR;
+            case 'low_fat':
+                return Diet.LOW_FAT;
+            default:
+                return undefined;
+        }
+    });
+    // Only return enums that are defined, otherwise return empty array
+    return enums.filter((diet) => diet !== undefined) as Diet[];
+};
+
 // Retrieves initial products from the stores
-const retrieveProducts = async (term: string, excludeSupermarkets?: string): Promise<CommonProduct[]> => {
+const retrieveProducts = async (
+    term: string,
+    excludeSupermarkets?: string,
+    diets?: Diet[]
+): Promise<CommonProduct[]> => {
     // Get list of stores to retrieve products from
     const stores = translateExcludeTermToStores(excludeSupermarkets);
     let products: CommonProduct[] = [];
     if (stores.includes(Store.JUMBO)) {
+        const jumboDiets = translateDietToJumboDiets(diets);
         // Retrieve Jumbo products
-        const jumboProducts = await jumbo.product().getProductsFromName(term);
-        products = products.concat(
-            jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
-        );
+        try {
+            const jumboProducts = await jumbo.product().getProductsFromName(term, 0, 10, {
+                diet: jumboDiets
+            });
+            products = products.concat(
+                jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
+            );
+        } catch (e) {
+            console.error(e);
+        }
     }
     if (stores.includes(Store.ALBERT_HEIJN)) {
+        const ahDiets = translateDietToAHDiets(diets);
         // Retrieve AH products
-        const ahProducts = await ah.product().getProductsFromName(term);
-        products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
+        try {
+            const ahProducts = await ah.product().getProductsFromName(term, {
+                property: ahDiets
+            });
+            products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
+        } catch (e) {
+            console.error(e);
+        }
     }
     // Merge products
     return products;
-};
-
-const mapJumboProductToCommonProduct = (product: JumboProductData): CommonProduct => {
-    return {
-        store: Store.JUMBO,
-        id: product.id,
-        title: product.title,
-        url: `https://www.jumbo.com/${product.title.toLowerCase().replace(/[^a-zA-Z0-9]+/g, '-')}/${product.id}`,
-        thumbnailUrl: product.imageInfo?.primaryView[0].url ?? '',
-        price: product.prices.price.amount
-    };
-};
-
-const mapAHProductToCommonProduct = (product: AHProductModel): CommonProduct => {
-    return {
-        store: Store.ALBERT_HEIJN,
-        id: product.hqId.toString(),
-        title: product.title,
-        url: `https://www.ah.nl/producten/product/wi${product.webshopId}/${product.title
-            .toLowerCase()
-            .replace(/[^a-zA-Z0-9]+/g, '-')}`,
-        thumbnailUrl: product.images[product.images.length - 1].url ?? '',
-        // Price is in euros, so multiply by 100 to get cents
-        price: product.priceBeforeBonus * 100
-    };
 };
 
 // Translates exclude query into list of Stores to include in the final result
@@ -114,8 +141,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const term = req.query.term as string;
     const sort = req.query.sort as string;
     const excludeSupermarkets = req.query.excludeSupermarkets as string;
+    const diet = req.query.diet as string;
+    const diets = translateDietQueryToDiet(diet);
     // Merge products
-    const commonProducts = await retrieveProducts(term, excludeSupermarkets);
+    const commonProducts = await retrieveProducts(term, excludeSupermarkets, diets);
     // Filter products
     const filteredProducts = filterSupermarket(commonProducts, excludeSupermarkets);
     // Sort products

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { mapStoreToFilter } from '../../lib/redux/api/search';
 import { Store } from '../../pages/api/types';
 import { useSearchContext } from '../search/hooks/useSearchContext';
+import { StoreCheckbox } from './StoreCheckbox';
 
 interface StoreChecked {
     store: Store;
@@ -40,13 +41,13 @@ export const SupermarketFilter: React.VFC = () => {
             <Text fontWeight="bold">Supermarkets</Text>
             {/* Checkbox for every store */}
             {checkedItems.map((item, index) => (
-                <Checkbox
-                    isChecked={checkedItems[index].checked}
+                <StoreCheckbox
                     key={item.store}
-                    onChange={(e) => handleChange(e, index)}
-                >
-                    {item.store}
-                </Checkbox>
+                    index={index}
+                    store={item.store}
+                    isChecked={checkedItems[index].checked}
+                    onChange={handleChange}
+                />
             ))}
         </Stack>
     );
