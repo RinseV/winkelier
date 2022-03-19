@@ -6,14 +6,25 @@ import { CommonProduct, Store } from './types';
 const jumbo = new Jumbo();
 const ah = new AH();
 
-const retrieveProducts = async (query: string): Promise<CommonProduct[]> => {
-    const jumboProducts = await jumbo.product().getProductsFromName(query);
-    const ahProducts = await ah.product().getProductsFromName(query);
-    // Convert products to common product
-    const jumboCommonProducts = jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data));
-    const ahCommonProducts = ahProducts.products.map((product) => mapAHProductToCommonProduct(product));
+// Retrieves initial products from the stores
+const retrieveProducts = async (term: string, excludeSupermarkets?: string): Promise<CommonProduct[]> => {
+    // Get list of stores to retrieve products from
+    const stores = translateExcludeTermToStores(excludeSupermarkets);
+    let products: CommonProduct[] = [];
+    if (stores.includes(Store.JUMBO)) {
+        // Retrieve Jumbo products
+        const jumboProducts = await jumbo.product().getProductsFromName(term);
+        products = products.concat(
+            jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
+        );
+    }
+    if (stores.includes(Store.ALBERT_HEIJN)) {
+        // Retrieve AH products
+        const ahProducts = await ah.product().getProductsFromName(term);
+        products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
+    }
     // Merge products
-    return [...jumboCommonProducts, ...ahCommonProducts];
+    return products;
 };
 
 const mapJumboProductToCommonProduct = (product: JumboProductData): CommonProduct => {
@@ -41,26 +52,41 @@ const mapAHProductToCommonProduct = (product: AHProductModel): CommonProduct => 
     };
 };
 
+// Translates exclude query into list of Stores to include in the final result
+const translateExcludeTermToStores = (excludeSupermarkets?: string): Store[] => {
+    // Default is all
+    let result = Object.values(Store);
+    if (!excludeSupermarkets) {
+        return result;
+    }
+    // Split supermarkets into array
+    const supermarkets = excludeSupermarkets.split(',');
+    if (supermarkets.includes('jumbo')) {
+        // Exclude Jumbo
+        result = result.filter((store) => store !== Store.JUMBO);
+    }
+    if (supermarkets.includes('ah')) {
+        // Exclude AH
+        result = result.filter((store) => store !== Store.ALBERT_HEIJN);
+    }
+    return result;
+};
+
+// Excludes given supermarkets from final result
 const filterSupermarket = (products: CommonProduct[], excludeSupermarkets?: string): CommonProduct[] => {
     // Default is all
     if (!excludeSupermarkets) {
         return products;
     }
     let result = products;
-    // Split supermarkets into array
-    const supermarkets = excludeSupermarkets.split(',');
+    // Get list of Stores to include
+    const stores = translateExcludeTermToStores(excludeSupermarkets);
     // Filter products
-    if (supermarkets.includes('jumbo')) {
-        // Exclude products from Jumbo
-        result = products.filter((product) => product.store !== Store.JUMBO);
-    }
-    if (supermarkets.includes('ah')) {
-        // Exclude products from Albert Heijn
-        result = products.filter((product) => product.store !== Store.ALBERT_HEIJN);
-    }
+    result = result.filter((product) => stores.includes(product.store));
     return result;
 };
 
+// Sorts products according to sort query
 const sortProducts = (products: CommonProduct[], sort?: string): CommonProduct[] => {
     // Default is price ascending
     let result = products;
@@ -89,7 +115,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const sort = req.query.sort as string;
     const excludeSupermarkets = req.query.excludeSupermarkets as string;
     // Merge products
-    const commonProducts = await retrieveProducts(term);
+    const commonProducts = await retrieveProducts(term, excludeSupermarkets);
     // Filter products
     const filteredProducts = filterSupermarket(commonProducts, excludeSupermarkets);
     // Sort products
