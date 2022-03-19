@@ -15,11 +15,8 @@ export const Search: React.VFC = () => {
                 <SupermarketFilter />
             </Sidebar>
             <Layout>
-                <Stack spacing={4} w="full">
-                    <Header />
-                    <SearchHeader />
-                    <ProductSearch />
-                </Stack>
+                <Header />
+                <ProductSearch />
             </Layout>
         </SearchProvider>
     );

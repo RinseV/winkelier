@@ -25,7 +25,11 @@ export const ProductSearch: React.VFC = () => {
     }
 
     if (!data || data.length === 0) {
-        return <Text textAlign="center">No products found</Text>;
+        return (
+            <Text textAlign="center" p={4}>
+                No products found
+            </Text>
+        );
     }
 
     return <Products products={data} />;

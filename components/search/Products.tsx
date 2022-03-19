@@ -9,7 +9,7 @@ type ProductsProps = {
 
 export const Products: React.VFC<ProductsProps> = ({ products }) => {
     return (
-        <SimpleGrid minChildWidth="300px" spacingX={2} spacingY={4}>
+        <SimpleGrid p={4} w="full" minChildWidth="300px" spacingX={2} spacingY={4}>
             {products.map((product) => (
                 <Product key={product.id} product={product} />
             ))}
