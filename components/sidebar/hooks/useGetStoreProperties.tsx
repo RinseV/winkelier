@@ -4,6 +4,7 @@ import { AHIcon } from '../../brand/icons/AH';
 import { AldiIcon } from '../../brand/icons/Aldi';
 import { CoopIcon } from '../../brand/icons/Coop';
 import { JumboIcon } from '../../brand/icons/Jumbo';
+import { PlusIcon } from '../../brand/icons/Plus';
 
 interface UseGetStorePropertiesReturn {
     colorScheme: string;
@@ -21,6 +22,8 @@ export const useGetStoreProperties = (store: Store): UseGetStorePropertiesReturn
                 return 'aldi';
             case Store.COOP:
                 return 'coop';
+            case Store.PLUS:
+                return 'plus';
             default:
                 return 'brand';
         }
@@ -36,6 +39,8 @@ export const useGetStoreProperties = (store: Store): UseGetStorePropertiesReturn
                 return <AldiIcon />;
             case Store.COOP:
                 return <CoopIcon />;
+            case Store.PLUS:
+                return <PlusIcon />;
             default:
                 return null;
         }

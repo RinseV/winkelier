@@ -8,6 +8,6 @@ export const mapAldiProductToCommonProduct = (product: ArticleModel): CommonProd
         title: product.title,
         url: product.webDetailURL,
         thumbnailUrl: product.primaryImage.baseUrl,
-        price: parseFloat(product.price) * 100
+        price: Math.round(parseFloat(product.price) * 100)
     };
 };

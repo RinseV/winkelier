@@ -53,6 +53,6 @@ export const mapCoopProductToCommonProduct = (product: ProductModel): CommonProd
         title: product.name,
         url: `https://www.coop.nl/product/${product.sku}/${product.name.replace(/[^a-zA-Z0-9]+/g, '-')}`,
         thumbnailUrl: product.images[0].effectiveUrl ?? '',
-        price: product.listPrice.value * 100
+        price: Math.round(product.listPrice.value * 100)
     };
 };

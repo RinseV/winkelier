@@ -2,7 +2,8 @@ export enum Store {
     JUMBO = 'Jumbo',
     ALBERT_HEIJN = 'Albert Heijn',
     ALDI = 'Aldi',
-    COOP = 'Coop'
+    COOP = 'Coop',
+    PLUS = 'Plus'
 }
 
 export enum Diet {

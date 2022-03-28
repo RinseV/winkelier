@@ -6,6 +6,7 @@ import { AldiIcon } from '../brand/icons/Aldi';
 import { CoopIcon } from '../brand/icons/Coop';
 import { IconLink } from '../brand/icons/IconLink';
 import { JumboIcon } from '../brand/icons/Jumbo';
+import { PlusIcon } from '../brand/icons/Plus';
 import { Logo } from '../brand/Logo';
 import { Layout } from '../layout/Layout';
 import { SearchForm } from './SearchForm';
@@ -31,6 +32,9 @@ export const Home: React.VFC = () => {
                     </IconLink>
                     <IconLink href="https://www.coop.nl/">
                         <CoopIcon boxSize="80px" />
+                    </IconLink>
+                    <IconLink href="https://www.plus.nl/">
+                        <PlusIcon boxSize="80px" />
                     </IconLink>
                 </HStack>
             </Stack>

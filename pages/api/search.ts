@@ -2,6 +2,7 @@ import { AH } from 'albert-heijn-wrapper';
 import { Jumbo } from 'jumbo-wrapper';
 import { Aldi } from 'aldi-wrapper';
 import { Coop } from 'coop-wrapper';
+import { Plus } from 'plus-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
     mapAHProductToCommonProduct,
@@ -20,11 +21,13 @@ import {
     translateAllergensToCoopAllergens,
     translateDietToCoopDiets
 } from '../../lib/helpers/coop';
+import { mapPlusProductToCommonProduct, translateDietToPlusDiets } from '../../lib/helpers/plus';
 
 const jumbo = new Jumbo();
 const ah = new AH();
 const aldi = new Aldi();
 const coop = new Coop();
+const plus = new Plus();
 
 // Translates diet query into list of Diets to include in the final result
 const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
@@ -135,6 +138,7 @@ const retrieveProducts = async (
             console.error(e);
         }
     }
+    // Aldi does not have any diet or allergen filters, so don't include Aldi if diets or allergens are specified
     if (stores.includes(Store.ALDI) && (!diets || diets?.length === 0) && (!allergens || allergens?.length === 0)) {
         // Retrieve Aldi products
         try {
@@ -159,6 +163,33 @@ const retrieveProducts = async (
             products = products.concat(coopProducts.elements.map((element) => mapCoopProductToCommonProduct(element)));
         } catch (e) {
             console.error(e);
+        }
+    }
+    // Plus does not have allergen filters, so don't include Plus if allergens are specified
+    if (stores.includes(Store.PLUS) && (!allergens || allergens?.length === 0)) {
+        const plusDiet = translateDietToPlusDiets(diets);
+        if (plusDiet !== null) {
+            // Retrieve plus products
+            try {
+                let initialPlusProducts;
+                if (plusDiet.length > 0) {
+                    initialPlusProducts = await plus.product().getProductsFromName(term, {
+                        diet: plusDiet,
+                        limit: 10
+                    });
+                } else {
+                    initialPlusProducts = await plus.product().getProductsFromName(term, {
+                        limit: 10
+                    });
+                }
+                // Also retrieve every individual product since Plus does not return them in a single call
+                const plusProducts = await Promise.all(
+                    initialPlusProducts.items.map((item) => plus.product().getProductFromId(parseInt(item.itemno, 10)))
+                );
+                products = products.concat(plusProducts.map((product) => mapPlusProductToCommonProduct(product)));
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
     // Merge products
@@ -237,8 +268,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const allergens = translateAllergenQueryToAllergens(allergen);
     // Merge products
     const commonProducts = await retrieveProducts(term, excludeSupermarkets, diets, allergens);
+    // Remove products that have no price
+    const products = commonProducts.filter((product) => isNaN(product.price) === false);
     // Filter products
-    const filteredProducts = filterSupermarket(commonProducts, excludeSupermarkets);
+    const filteredProducts = filterSupermarket(products, excludeSupermarkets);
     // Sort products
     const sortedCommonProducts = sortProducts(filteredProducts, sort);
     res.status(200).json(sortedCommonProducts);

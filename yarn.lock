@@ -2419,6 +2419,13 @@ picomatch@^2.2.3:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-2.3.1.tgz#3ba3833733646d9d3e4995946c1365a67fb07a42"
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
+plus-wrapper@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/plus-wrapper/-/plus-wrapper-1.0.0.tgz#919afda18bfb3947afb0a1ec26aa395b3ec64c4e"
+  integrity sha512-/7qtjoMnC7TIwPuozBp+IBlXwPvhS4TCJIzpuo1tDodwMHHIOAyjj0ODMNE2aKJHnEczbZH/BQN85Drt2Ufx7g==
+  dependencies:
+    axios "^0.26.1"
+
 popmotion@11.0.3:
   version "11.0.3"
   resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-11.0.3.tgz#565c5f6590bbcddab7a33a074bb2ba97e24b0cc9"

@@ -86,6 +86,6 @@ export const mapAHProductToCommonProduct = (product: ProductModel): CommonProduc
             .replace(/[^a-zA-Z0-9]+/g, '-')}`,
         thumbnailUrl: product.images[product.images.length - 1]?.url ?? '',
         // Price is in euros, so multiply by 100 to get cents
-        price: product.priceBeforeBonus * 100
+        price: Math.round(product.priceBeforeBonus * 100)
     };
 };
