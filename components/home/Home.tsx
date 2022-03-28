@@ -1,6 +1,10 @@
 import { Flex, HStack, Link, Stack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import React from 'react';
+import { AHIcon } from '../brand/icons/AH';
+import { AldiIcon } from '../brand/icons/Aldi';
+import { IconLink } from '../brand/icons/IconLink';
+import { JumboIcon } from '../brand/icons/Jumbo';
 import { Logo } from '../brand/Logo';
 import { Layout } from '../layout/Layout';
 import { SearchForm } from './SearchForm';
@@ -15,38 +19,15 @@ export const Home: React.VFC = () => {
             <Stack mt="auto" pb={4} spacing={4} alignItems="center">
                 <Text fontSize="sm">Currently supported supermarkets:</Text>
                 <HStack spacing={8} alignItems="center">
-                    <Link
-                        href="https://www.jumbo.com/"
-                        transition="all 0.1s"
-                        _hover={{
-                            transform: 'scale(1.1)'
-                        }}
-                    >
-                        <Image
-                            alt="Jumbo logo"
-                            width={80}
-                            height={80}
-                            src="/Jumbo.svg"
-                            placeholder="blur"
-                            blurDataURL="https://www.jumbo.com/INTERSHOP/static/WFS/Jumbo-Grocery-Site/-/Jumbo-Grocery/nl_NL/CMS/Images/Thumbnails-search-%28180x180%29/search-algemeen.png"
-                        />
-                    </Link>
-                    <Link
-                        href="https://www.ah.nl/"
-                        transition="all 0.1s"
-                        _hover={{
-                            transform: 'scale(1.1)'
-                        }}
-                    >
-                        <Image
-                            alt="AH logo"
-                            width={80}
-                            height={80}
-                            src="/AH.svg"
-                            placeholder="blur"
-                            blurDataURL="https://static.ah.nl/ah-static/images/logo-ah.png"
-                        />
-                    </Link>
+                    <IconLink href="https://www.jumbo.com/">
+                        <JumboIcon boxSize="80px" />
+                    </IconLink>
+                    <IconLink href="https://www.ah.nl/">
+                        <AHIcon boxSize="80px" />
+                    </IconLink>
+                    <IconLink href="https://www.aldi.nl/">
+                        <AldiIcon boxSize="80px" />
+                    </IconLink>
                 </HStack>
             </Stack>
         </Layout>

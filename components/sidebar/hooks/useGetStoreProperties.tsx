@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from 'react';
 import { Store } from '../../../pages/api/types';
 import { AHIcon } from '../../brand/icons/AH';
+import { AldiIcon } from '../../brand/icons/Aldi';
 import { JumboIcon } from '../../brand/icons/Jumbo';
 
 interface UseGetStorePropertiesReturn {
@@ -15,6 +16,8 @@ export const useGetStoreProperties = (store: Store): UseGetStorePropertiesReturn
                 return 'jumbo';
             case Store.ALBERT_HEIJN:
                 return 'ah';
+            case Store.ALDI:
+                return 'aldi';
             default:
                 return 'brand';
         }
@@ -26,6 +29,8 @@ export const useGetStoreProperties = (store: Store): UseGetStorePropertiesReturn
                 return <JumboIcon />;
             case Store.ALBERT_HEIJN:
                 return <AHIcon />;
+            case Store.ALDI:
+                return <AldiIcon />;
             default:
                 return null;
         }

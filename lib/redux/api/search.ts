@@ -2,7 +2,7 @@ import { api } from '.';
 import { CommonProduct, Store } from '../../../pages/api/types';
 
 export type SortOptions = '+price' | '-price' | '+title' | '-title';
-export type StoreFilter = 'jumbo' | 'ah';
+export type StoreFilter = 'jumbo' | 'ah' | 'aldi';
 export type DietFilter = 'organic' | 'vegan' | 'vegetarian' | 'gluten_free' | 'lactose_free' | 'low_sugar' | 'low_fat';
 export type AllergenFilter = 'gluten' | 'lactose' | 'diary' | 'soy' | 'peanuts' | 'nuts' | 'eggs';
 
@@ -12,6 +12,8 @@ export const mapStoreToFilter = (store: Store): StoreFilter => {
             return 'jumbo';
         case Store.ALBERT_HEIJN:
             return 'ah';
+        case Store.ALDI:
+            return 'aldi';
         default:
             return 'jumbo';
     }

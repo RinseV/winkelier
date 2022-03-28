@@ -1,5 +1,6 @@
 import { AH } from 'albert-heijn-wrapper';
 import { Jumbo } from 'jumbo-wrapper';
+import { Aldi } from 'aldi-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
     mapAHProductToCommonProduct,
@@ -12,9 +13,11 @@ import {
     translateDietToJumboDiets
 } from '../../lib/helpers/jumbo';
 import { Allergens, CommonProduct, Diet, Store } from './types';
+import { mapAldiProductToCommonProduct } from '../../lib/helpers/aldi';
 
 const jumbo = new Jumbo();
 const ah = new AH();
+const aldi = new Aldi();
 
 // Translates diet query into list of Diets to include in the final result
 const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
@@ -125,6 +128,22 @@ const retrieveProducts = async (
             console.error(e);
         }
     }
+    if (stores.includes(Store.ALDI)) {
+        if ((diets && diets.length > 0) || (allergens && allergens.length > 0)) {
+            // Do not retrieve Aldi products if diets or allergens are specified
+            return products;
+        }
+        // Retrieve Aldi products
+        try {
+            const aldiProducts = await aldi.product().getProductsFromName(term);
+            // Only keep first 10 products
+            products = products.concat(
+                aldiProducts.articles.slice(0, 10).map((article) => mapAldiProductToCommonProduct(article))
+            );
+        } catch (e) {
+            console.error(e);
+        }
+    }
     // Merge products
     return products;
 };
@@ -145,6 +164,10 @@ const translateExcludeTermToStores = (excludeSupermarkets?: string): Store[] => 
     if (supermarkets.includes('ah')) {
         // Exclude AH
         result = result.filter((store) => store !== Store.ALBERT_HEIJN);
+    }
+    if (supermarkets.includes('aldi')) {
+        // Exclude Aldi
+        result = result.filter((store) => store !== Store.ALDI);
     }
     return result;
 };
