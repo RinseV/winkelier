@@ -95,9 +95,12 @@ const retrieveProducts = async (
         const jumboAllergens = translateAllergensToJumboAllergens(allergens);
         // Retrieve Jumbo products
         try {
-            const jumboProducts = await jumbo.product().getProductsFromName(term, 0, 10, {
-                diet: jumboDiets,
-                allergens: jumboAllergens
+            const jumboProducts = await jumbo.product().getProductsFromName(term, {
+                limit: 10,
+                filters: {
+                    diet: jumboDiets,
+                    allergens: jumboAllergens
+                }
             });
             products = products.concat(
                 jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
@@ -112,7 +115,10 @@ const retrieveProducts = async (
         // Retrieve AH products
         try {
             const ahProducts = await ah.product().getProductsFromName(term, {
-                property: [...ahDiets, ...ahAllergens]
+                size: 10,
+                filter: {
+                    property: [...ahDiets, ...ahAllergens]
+                }
             });
             products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
         } catch (e) {
