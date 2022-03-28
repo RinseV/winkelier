@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { CommonProduct, Store } from '../../../pages/api/types';
 import { AHIcon } from '../../brand/icons/AH';
 import { AldiIcon } from '../../brand/icons/Aldi';
+import { CoopIcon } from '../../brand/icons/Coop';
 import { JumboIcon } from '../../brand/icons/Jumbo';
 
 interface UseGetProductPropertiesReturn {
@@ -19,6 +20,8 @@ export const useGetProductProperties = (product: CommonProduct): UseGetProductPr
                 return 'ah';
             case Store.ALDI:
                 return 'aldi';
+            case Store.COOP:
+                return 'coop';
             default:
                 return 'brand';
         }
@@ -32,6 +35,8 @@ export const useGetProductProperties = (product: CommonProduct): UseGetProductPr
                 return <AHIcon boxSize="32px" />;
             case Store.ALDI:
                 return <AldiIcon boxSize="32px" />;
+            case Store.COOP:
+                return <CoopIcon boxSize="32px" />;
             default:
                 return null;
         }

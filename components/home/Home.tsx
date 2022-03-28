@@ -3,6 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 import { AHIcon } from '../brand/icons/AH';
 import { AldiIcon } from '../brand/icons/Aldi';
+import { CoopIcon } from '../brand/icons/Coop';
 import { IconLink } from '../brand/icons/IconLink';
 import { JumboIcon } from '../brand/icons/Jumbo';
 import { Logo } from '../brand/Logo';
@@ -27,6 +28,9 @@ export const Home: React.VFC = () => {
                     </IconLink>
                     <IconLink href="https://www.aldi.nl/">
                         <AldiIcon boxSize="80px" />
+                    </IconLink>
+                    <IconLink href="https://www.coop.nl/">
+                        <CoopIcon boxSize="80px" />
                     </IconLink>
                 </HStack>
             </Stack>

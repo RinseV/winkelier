@@ -20,6 +20,7 @@
     "albert-heijn-wrapper": "^2.0.0",
     "aldi-wrapper": "^1.0.0",
     "chakra-react-select": "^3.1.1",
+    "coop-wrapper": "^1.0.0",
     "framer-motion": "^6",
     "jumbo-wrapper": "^2.0.1",
     "next": "12.1.0",

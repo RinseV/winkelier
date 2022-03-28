@@ -1,6 +1,7 @@
 import { AH } from 'albert-heijn-wrapper';
 import { Jumbo } from 'jumbo-wrapper';
 import { Aldi } from 'aldi-wrapper';
+import { Coop } from 'coop-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import {
     mapAHProductToCommonProduct,
@@ -14,10 +15,16 @@ import {
 } from '../../lib/helpers/jumbo';
 import { Allergens, CommonProduct, Diet, Store } from './types';
 import { mapAldiProductToCommonProduct } from '../../lib/helpers/aldi';
+import {
+    mapCoopProductToCommonProduct,
+    translateAllergensToCoopAllergens,
+    translateDietToCoopDiets
+} from '../../lib/helpers/coop';
 
 const jumbo = new Jumbo();
 const ah = new AH();
 const aldi = new Aldi();
+const coop = new Coop();
 
 // Translates diet query into list of Diets to include in the final result
 const translateDietQueryToDiet = (dietQuery?: string): Diet[] => {
@@ -128,11 +135,7 @@ const retrieveProducts = async (
             console.error(e);
         }
     }
-    if (stores.includes(Store.ALDI)) {
-        if ((diets && diets.length > 0) || (allergens && allergens.length > 0)) {
-            // Do not retrieve Aldi products if diets or allergens are specified
-            return products;
-        }
+    if (stores.includes(Store.ALDI) && (!diets || diets?.length === 0) && (!allergens || allergens?.length === 0)) {
         // Retrieve Aldi products
         try {
             const aldiProducts = await aldi.product().getProductsFromName(term);
@@ -140,6 +143,20 @@ const retrieveProducts = async (
             products = products.concat(
                 aldiProducts.articles.slice(0, 10).map((article) => mapAldiProductToCommonProduct(article))
             );
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    if (stores.includes(Store.COOP)) {
+        const coopDiet = translateDietToCoopDiets(diets);
+        const coopAllergen = translateAllergensToCoopAllergens(allergens);
+        // Retrieve coop products
+        try {
+            const coopProducts = await coop.product().getProductsFromName(term, {
+                amount: 10,
+                filters: coopDiet ? coopDiet : coopAllergen ? coopAllergen : undefined
+            });
+            products = products.concat(coopProducts.elements.map((element) => mapCoopProductToCommonProduct(element)));
         } catch (e) {
             console.error(e);
         }
