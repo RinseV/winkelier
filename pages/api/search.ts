@@ -217,6 +217,14 @@ const translateExcludeTermToStores = (excludeSupermarkets?: string): Store[] => 
         // Exclude Aldi
         result = result.filter((store) => store !== Store.ALDI);
     }
+    if (supermarkets.includes('coop')) {
+        // Exclude Coop
+        result = result.filter((store) => store !== Store.COOP);
+    }
+    if (supermarkets.includes('plus')) {
+        // Exclude Plus
+        result = result.filter((store) => store !== Store.PLUS);
+    }
     return result;
 };
 
