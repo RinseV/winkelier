@@ -136,6 +136,11 @@ export const theme = extendTheme({
             baseStyle: {
                 transition: 'all 0.2s'
             }
+        },
+        Skeleton: {
+            baseStyle: {
+                transition: 'all 0.2s'
+            }
         }
     }
 });
