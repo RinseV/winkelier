@@ -31,6 +31,7 @@ export const Product: React.VFC<ProductProps> = ({ product }) => {
                     fallbackSrc={placeholder}
                     alt={product.title}
                     mt={2}
+                    borderRadius="lg"
                 />
                 <Stack spacing={2} p={4} h="full">
                     <HStack>
