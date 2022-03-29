@@ -2,6 +2,10 @@ import { HStack, Stack, useColorModeValue } from '@chakra-ui/react';
 import React from 'react';
 import { SearchBar } from '../search/SearchBar';
 import { SearchHeader } from '../search/SearchHeader';
+import { AllergenFilter } from '../sidebar/AllergenFilter';
+import { DietFilter } from '../sidebar/DietFilter';
+import { MobileMenu } from '../sidebar/MobileMenu';
+import { SupermarketFilter } from '../sidebar/SupermarketFilter';
 import { DarkThemeToggle } from './DarkThemeToggle';
 
 export const Header: React.VFC = () => {
@@ -21,6 +25,11 @@ export const Header: React.VFC = () => {
                 <SearchBar />
                 <DarkThemeToggle />
             </HStack>
+            <MobileMenu>
+                <SupermarketFilter />
+                <DietFilter />
+                <AllergenFilter />
+            </MobileMenu>
             <SearchHeader />
         </Stack>
     );
