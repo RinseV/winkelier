@@ -1,4 +1,4 @@
-import { Badge, HStack, Image, Link, Stack, Text, useColorModeValue } from '@chakra-ui/react';
+import { Badge, HStack, Image, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 import { CommonProduct } from '../../pages/api/types';
@@ -18,6 +18,7 @@ export const Product: React.VFC<ProductProps> = ({ product }) => {
             <Card
                 justifySelf="center"
                 as="a"
+                h="19rem"
                 _hover={{
                     transform: 'scale(1.05)'
                 }}

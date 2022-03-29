@@ -1,10 +1,11 @@
-import { Text } from '@chakra-ui/react';
+import { SimpleGrid, Skeleton, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useLazyGetProductsFromTermQuery } from '../../lib/redux/api/search';
 import { LoadingIndicator } from '../common/LoadingIndicator';
 import { useSearchContext } from './hooks/useSearchContext';
 import { Products } from './Products';
+import { ProductSkeleton } from './ProductSkeleton';
 
 export const ProductSearch: React.VFC = () => {
     const router = useRouter();
@@ -21,7 +22,13 @@ export const ProductSearch: React.VFC = () => {
     }, [term, sort, getProducts, storeFilter, dietFilter, allergenFilter]);
 
     if (isLoading || isUninitialized || isFetching) {
-        return <LoadingIndicator />;
+        return (
+            <SimpleGrid p={4} w="full" minChildWidth="300px" spacingX={2} spacingY={4}>
+                {[...Array(20)].map((_, i) => (
+                    <ProductSkeleton key={i} />
+                ))}
+            </SimpleGrid>
+        );
     }
 
     if (!data || data.length === 0) {
