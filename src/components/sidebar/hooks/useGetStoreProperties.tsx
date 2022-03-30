@@ -1,20 +1,19 @@
-import React, { useMemo } from 'react';
-import { CommonProduct, Store } from '../../../pages/api/types';
+import { ReactNode, useMemo } from 'react';
+import { Store } from '../../../lib/api/types';
 import { AHIcon } from '../../brand/icons/AH';
 import { AldiIcon } from '../../brand/icons/Aldi';
 import { CoopIcon } from '../../brand/icons/Coop';
 import { JumboIcon } from '../../brand/icons/Jumbo';
 import { PlusIcon } from '../../brand/icons/Plus';
 
-interface UseGetProductPropertiesReturn {
+interface UseGetStorePropertiesReturn {
     colorScheme: string;
-    icon: React.ReactElement | null;
-    formattedPrice: string;
+    icon: ReactNode;
 }
 
-export const useGetProductProperties = (product: CommonProduct): UseGetProductPropertiesReturn => {
+export const useGetStoreProperties = (store: Store): UseGetStorePropertiesReturn => {
     const colorScheme = useMemo(() => {
-        switch (product.store) {
+        switch (store) {
             case Store.JUMBO:
                 return 'jumbo';
             case Store.ALBERT_HEIJN:
@@ -28,35 +27,27 @@ export const useGetProductProperties = (product: CommonProduct): UseGetProductPr
             default:
                 return 'brand';
         }
-    }, [product.store]);
+    }, [store]);
 
     const icon = useMemo(() => {
-        switch (product.store) {
+        switch (store) {
             case Store.JUMBO:
-                return <JumboIcon boxSize="32px" />;
+                return <JumboIcon />;
             case Store.ALBERT_HEIJN:
-                return <AHIcon boxSize="32px" />;
+                return <AHIcon />;
             case Store.ALDI:
-                return <AldiIcon boxSize="32px" />;
+                return <AldiIcon />;
             case Store.COOP:
-                return <CoopIcon boxSize="32px" />;
+                return <CoopIcon />;
             case Store.PLUS:
-                return <PlusIcon boxSize="32px" />;
+                return <PlusIcon />;
             default:
                 return null;
         }
-    }, [product.store]);
-
-    const formattedPrice = useMemo(() => {
-        return (product.price / 100).toLocaleString('nl-NL', {
-            style: 'currency',
-            currency: 'EUR'
-        });
-    }, [product.price]);
+    }, [store]);
 
     return {
         colorScheme,
-        icon,
-        formattedPrice
+        icon
     };
 };

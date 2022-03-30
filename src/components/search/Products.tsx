@@ -1,6 +1,6 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import React from 'react';
-import { CommonProduct } from '../../pages/api/types';
+import { CommonProduct } from '../../lib/api/types';
 import { Product } from './Product';
 
 type ProductsProps = {

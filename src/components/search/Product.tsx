@@ -1,7 +1,7 @@
 import { Badge, HStack, Image, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
-import { CommonProduct } from '../../pages/api/types';
+import { CommonProduct } from '../../lib/api/types';
 import { Card } from '../layout/Card';
 import { useGetProductProperties } from './hooks/useGetProductProperties';
 

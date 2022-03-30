@@ -1,5 +1,5 @@
 import { ProductAllergenFilter, ProductData, ProductDietFilter } from 'jumbo-wrapper';
-import { Allergens, CommonProduct, Diet, Store } from '../../pages/api/types';
+import { Allergens, CommonProduct, Diet, Store } from './types';
 
 // Translates list of diets to Jumbo-specific diets
 export const translateDietToJumboDiets = (diet?: Diet[]): ProductDietFilter[] => {

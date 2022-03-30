@@ -1,5 +1,5 @@
 import { ProductModel, DietFilter } from 'plus-wrapper';
-import { CommonProduct, Diet, Store } from '../../pages/api/types';
+import { CommonProduct, Diet, Store } from './types';
 
 // Translates to Plus filter, undefined if no filter, null if filter cannot be applied
 export const translateDietToPlusDiets = (diet?: Diet[]): DietFilter[] | null => {

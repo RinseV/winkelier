@@ -1,5 +1,5 @@
 import { ProductModel, ProductFilter } from 'coop-wrapper';
-import { Allergens, CommonProduct, Diet, Store } from '../../pages/api/types';
+import { Allergens, CommonProduct, Diet, Store } from './types';
 
 // Translates to Coop filter, undefined if no filter, null if filter cannot be applied
 export const translateDietToCoopDiets = (diet?: Diet[]): ProductFilter | undefined | null => {

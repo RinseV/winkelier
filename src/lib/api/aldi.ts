@@ -1,5 +1,5 @@
 import { ArticleModel } from 'aldi-wrapper';
-import { CommonProduct, Store } from '../../pages/api/types';
+import { CommonProduct, Store } from './types';
 
 export const mapAldiProductToCommonProduct = (product: ArticleModel): CommonProduct => {
     return {

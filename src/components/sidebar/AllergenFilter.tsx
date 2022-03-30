@@ -1,7 +1,7 @@
 import { Checkbox, HStack, Stack, Text, Tooltip } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { MdInfo, MdInfoOutline } from 'react-icons/md';
-import { Allergens } from '../../pages/api/types';
+import { Allergens } from '../../lib/api/types';
 import { useSearchContext } from '../search/hooks/useSearchContext';
 
 interface AllergenChecked {

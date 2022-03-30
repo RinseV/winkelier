@@ -1,7 +1,7 @@
 import { Checkbox, Stack, Text } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { mapStoreToFilter } from '../../lib/redux/api/search';
-import { Store } from '../../pages/api/types';
+import { Store } from '../../lib/api/types';
 import { useSearchContext } from '../search/hooks/useSearchContext';
 import { StoreCheckbox } from './StoreCheckbox';
 

@@ -1,6 +1,6 @@
 import { Checkbox, HStack, Text } from '@chakra-ui/react';
 import React from 'react';
-import { Store } from '../../pages/api/types';
+import { Store } from '../../lib/api/types';
 import { useGetStoreProperties } from './hooks/useGetStoreProperties';
 
 type StoreCheckboxProps = {

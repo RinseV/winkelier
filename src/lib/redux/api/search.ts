@@ -1,5 +1,5 @@
 import { api } from '.';
-import { CommonProduct, Store } from '../../../pages/api/types';
+import { CommonProduct, Store } from '../../api/types';
 
 export type SortOptions = '+price' | '-price' | '+title' | '-title';
 export type StoreFilter = 'jumbo' | 'ah' | 'aldi' | 'coop' | 'plus';

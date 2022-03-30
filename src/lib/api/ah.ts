@@ -1,5 +1,5 @@
 import { ProductModel, ProductPropertyFilter } from 'albert-heijn-wrapper';
-import { Allergens, CommonProduct, Diet, Store } from '../../pages/api/types';
+import { Allergens, CommonProduct, Diet, Store } from './types';
 
 // Translates list of diets to AH-specific diets
 export const translateDietToAHDiets = (diet?: Diet[]): ProductPropertyFilter[] => {

@@ -1,7 +1,7 @@
 import { Checkbox, HStack, Stack, Text, Tooltip } from '@chakra-ui/react';
 import { useState } from 'react';
 import { MdInfoOutline } from 'react-icons/md';
-import { Diet } from '../../pages/api/types';
+import { Diet } from '../../lib/api/types';
 import { useSearchContext } from '../search/hooks/useSearchContext';
 
 interface DietChecked {

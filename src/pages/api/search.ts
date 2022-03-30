@@ -4,24 +4,20 @@ import { Aldi } from 'aldi-wrapper';
 import { Coop } from 'coop-wrapper';
 import { Plus } from 'plus-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import {
-    mapAHProductToCommonProduct,
-    translateAllergensToAHAllergens,
-    translateDietToAHDiets
-} from '../../lib/helpers/ah';
+import { mapAHProductToCommonProduct, translateAllergensToAHAllergens, translateDietToAHDiets } from '../../lib/api/ah';
 import {
     mapJumboProductToCommonProduct,
     translateAllergensToJumboAllergens,
     translateDietToJumboDiets
-} from '../../lib/helpers/jumbo';
-import { Allergens, CommonProduct, Diet, Store } from './types';
-import { mapAldiProductToCommonProduct } from '../../lib/helpers/aldi';
+} from '../../lib/api/jumbo';
+import { Allergens, CommonProduct, Diet, Store } from '../../lib/api/types';
+import { mapAldiProductToCommonProduct } from '../../lib/api/aldi';
 import {
     mapCoopProductToCommonProduct,
     translateAllergensToCoopAllergens,
     translateDietToCoopDiets
-} from '../../lib/helpers/coop';
-import { mapPlusProductToCommonProduct, translateDietToPlusDiets } from '../../lib/helpers/plus';
+} from '../../lib/api/coop';
+import { mapPlusProductToCommonProduct, translateDietToPlusDiets } from '../../lib/api/plus';
 
 const jumbo = new Jumbo();
 const ah = new AH();

@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useEffect, useState } from 'react';
 import { AllergenFilter, DietFilter, mapStoreToFilter, SortOptions, StoreFilter } from '../../lib/redux/api/search';
-import { Store } from '../../pages/api/types';
+import { Store } from '../../lib/api/types';
 
 export interface SearchContextInterface {
     sort: SortOptions;
