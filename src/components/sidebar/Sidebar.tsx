@@ -15,7 +15,7 @@ export const Sidebar: React.FC = ({ children }) => {
             transition="0.2s"
         >
             <Stack spacing={4} position="sticky" top={0} p={4}>
-                <Logo fontSize="5xl" />
+                <Logo fontSize="4xl" />
                 {children}
             </Stack>
         </Flex>
