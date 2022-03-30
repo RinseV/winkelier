@@ -1,11 +1,10 @@
-import { SimpleGrid, Skeleton, Text } from '@chakra-ui/react';
+import { SimpleGrid, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { useLazyGetProductsFromTermQuery } from '../../lib/redux/api/search';
-import { LoadingIndicator } from '../common/LoadingIndicator';
 import { useSearchContext } from './hooks/useSearchContext';
-import { Products } from './Products';
-import { ProductSkeleton } from './ProductSkeleton';
+import { Products } from '../product/Products';
+import { ProductSkeleton } from '../product/ProductSkeleton';
 
 export const ProductSearch: React.VFC = () => {
     const router = useRouter();
