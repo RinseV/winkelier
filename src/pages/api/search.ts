@@ -116,6 +116,8 @@ const retrieveProducts = async (
             );
         } catch (e) {
             console.error(e);
+            // Skip Jumbo
+            stores.splice(stores.indexOf(Store.JUMBO), 1);
         }
     }
     if (stores.includes(Store.ALBERT_HEIJN)) {
@@ -132,6 +134,8 @@ const retrieveProducts = async (
             products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
         } catch (e) {
             console.error(e);
+            // Skip AH
+            stores.splice(stores.indexOf(Store.ALBERT_HEIJN), 1);
         }
     }
     // Aldi does not have any diet or allergen filters, so don't include Aldi if diets or allergens are specified
@@ -145,6 +149,8 @@ const retrieveProducts = async (
             );
         } catch (e) {
             console.error(e);
+            // Skip Aldi
+            stores.splice(stores.indexOf(Store.ALDI), 1);
         }
     }
     if (stores.includes(Store.COOP)) {
@@ -159,6 +165,8 @@ const retrieveProducts = async (
             products = products.concat(coopProducts.elements.map((element) => mapCoopProductToCommonProduct(element)));
         } catch (e) {
             console.error(e);
+            // Skip Coop
+            stores.splice(stores.indexOf(Store.COOP), 1);
         }
     }
     // Plus does not have allergen filters, so don't include Plus if allergens are specified
@@ -185,6 +193,8 @@ const retrieveProducts = async (
                 products = products.concat(plusProducts.map((product) => mapPlusProductToCommonProduct(product)));
             } catch (e) {
                 console.error(e);
+                // Skip Plus
+                stores.splice(stores.indexOf(Store.PLUS), 1);
             }
         }
     }
