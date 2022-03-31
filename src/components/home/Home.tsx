@@ -15,26 +15,26 @@ export const Home: React.VFC = () => {
     return (
         <Layout>
             <Flex direction="column" alignItems="center" justifyContent="center" flex={1} w="full">
-                <Logo mb={8} />
+                <Logo mb={8} fontSize={{ base: '5xl', md: '7xl' }} />
                 <SearchForm />
             </Flex>
             <Stack mt="auto" pb={4} spacing={4} alignItems="center">
                 <Text fontSize="sm">Currently supported supermarkets:</Text>
-                <HStack spacing={8} alignItems="center">
+                <HStack spacing={{ base: 4, md: 8 }} alignItems="center">
                     <IconLink href="https://www.jumbo.com/">
-                        <JumboIcon boxSize="80px" />
+                        <JumboIcon boxSize={{ base: '40px', md: '80px' }} />
                     </IconLink>
                     <IconLink href="https://www.ah.nl/">
-                        <AHIcon boxSize="80px" />
+                        <AHIcon boxSize={{ base: '40px', md: '80px' }} />
                     </IconLink>
                     <IconLink href="https://www.aldi.nl/">
-                        <AldiIcon boxSize="80px" />
+                        <AldiIcon boxSize={{ base: '40px', md: '80px' }} />
                     </IconLink>
                     <IconLink href="https://www.coop.nl/">
-                        <CoopIcon boxSize="80px" />
+                        <CoopIcon boxSize={{ base: '40px', md: '80px' }} />
                     </IconLink>
                     <IconLink href="https://www.plus.nl/">
-                        <PlusIcon boxSize="80px" />
+                        <PlusIcon boxSize={{ base: '40px', md: '80px' }} />
                     </IconLink>
                 </HStack>
             </Stack>

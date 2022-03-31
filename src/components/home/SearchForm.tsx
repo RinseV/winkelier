@@ -27,7 +27,7 @@ export const SearchForm: React.VFC = () => {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} style={{ width: '50%' }}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ width: '70%' }}>
             <Stack alignItems="center" spacing={4}>
                 <ControlledTextInput<FormData>
                     control={control}
