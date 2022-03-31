@@ -1,9 +1,5 @@
 import pino from 'pino';
 
-const config = {
-    env: process.env.NODE_ENV
-};
-
 const pinoConfig = {
     browser: {
         asObject: true

@@ -1,27 +1,35 @@
 import { AH } from 'albert-heijn-wrapper';
-import { Jumbo } from 'jumbo-wrapper';
 import { Aldi } from 'aldi-wrapper';
-import { Coop } from 'coop-wrapper';
-import { Plus } from 'plus-wrapper';
-import type { NextApiRequest, NextApiResponse } from 'next';
 import axios, { AxiosError } from 'axios';
-import logger from '../../lib/logger/logger';
+import { Coop } from 'coop-wrapper';
+import https from 'https';
+import { Jumbo } from 'jumbo-wrapper';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { Plus } from 'plus-wrapper';
 import { mapAHProductToCommonProduct, translateAllergensToAHAllergens, translateDietToAHDiets } from '../../lib/api/ah';
-import {
-    mapJumboProductToCommonProduct,
-    translateAllergensToJumboAllergens,
-    translateDietToJumboDiets
-} from '../../lib/api/jumbo';
-import { Allergens, CommonProduct, Diet, Store } from '../../lib/api/types';
 import { mapAldiProductToCommonProduct } from '../../lib/api/aldi';
 import {
     mapCoopProductToCommonProduct,
     translateAllergensToCoopAllergens,
     translateDietToCoopDiets
 } from '../../lib/api/coop';
+import {
+    mapJumboProductToCommonProduct,
+    translateAllergensToJumboAllergens,
+    translateDietToJumboDiets
+} from '../../lib/api/jumbo';
 import { mapPlusProductToCommonProduct, translateDietToPlusDiets } from '../../lib/api/plus';
+import { Allergens, CommonProduct, Diet, Store } from '../../lib/api/types';
+import logger from '../../lib/logger/logger';
 
-const jumbo = new Jumbo();
+const jumbo = new Jumbo({
+    axiosConfig: {
+        httpsAgent: new https.Agent({
+            maxVersion: 'TLSv1.2'
+        }),
+        timeout: 10000
+    }
+});
 const ah = new AH();
 const aldi = new Aldi();
 const coop = new Coop();
