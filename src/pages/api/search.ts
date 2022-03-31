@@ -4,6 +4,8 @@ import { Aldi } from 'aldi-wrapper';
 import { Coop } from 'coop-wrapper';
 import { Plus } from 'plus-wrapper';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import axios, { AxiosError } from 'axios';
+import logger from '../../lib/logger/logger';
 import { mapAHProductToCommonProduct, translateAllergensToAHAllergens, translateDietToAHDiets } from '../../lib/api/ah';
 import {
     mapJumboProductToCommonProduct,
@@ -105,17 +107,22 @@ const retrieveProducts = async (
         // Retrieve Jumbo products
         try {
             const jumboProducts = await jumbo.product().getProductsFromName(term, {
-                limit: 10,
+                limit: 9,
                 filters: {
                     diet: jumboDiets,
                     allergens: jumboAllergens
                 }
             });
+            logger.info(`Retrieved ${jumboProducts.length} products from Jumbo for term ${term}`);
             products = products.concat(
                 jumboProducts.map((product) => mapJumboProductToCommonProduct(product.product.data))
             );
         } catch (e) {
             console.error(e);
+            if (axios.isAxiosError(e)) {
+                const error = e as AxiosError;
+                logger.error(`Error retrieving products from Coop for term ${term}: ${error.message}`);
+            }
             // Skip Jumbo
             stores.splice(stores.indexOf(Store.JUMBO), 1);
         }
@@ -131,9 +138,14 @@ const retrieveProducts = async (
                     property: [...ahDiets, ...ahAllergens]
                 }
             });
+            logger.info(`Retrieved ${ahProducts.products.length} products from Albert Heijn for term ${term}`);
             products = products.concat(ahProducts.products.map((product) => mapAHProductToCommonProduct(product)));
         } catch (e) {
             console.error(e);
+            if (axios.isAxiosError(e)) {
+                const error = e as AxiosError;
+                logger.error(`Error retrieving products from Coop for term ${term}: ${error.message}`);
+            }
             // Skip AH
             stores.splice(stores.indexOf(Store.ALBERT_HEIJN), 1);
         }
@@ -143,12 +155,17 @@ const retrieveProducts = async (
         // Retrieve Aldi products
         try {
             const aldiProducts = await aldi.product().getProductsFromName(term);
+            logger.info(`Retrieved ${aldiProducts.articles.length} products from Aldi for term ${term}`);
             // Only keep first 10 products
             products = products.concat(
                 aldiProducts.articles.slice(0, 10).map((article) => mapAldiProductToCommonProduct(article))
             );
         } catch (e) {
             console.error(e);
+            if (axios.isAxiosError(e)) {
+                const error = e as AxiosError;
+                logger.error(`Error retrieving products from Coop for term ${term}: ${error.message}`);
+            }
             // Skip Aldi
             stores.splice(stores.indexOf(Store.ALDI), 1);
         }
@@ -162,9 +179,14 @@ const retrieveProducts = async (
                 amount: 10,
                 filters: coopDiet ? coopDiet : coopAllergen ? coopAllergen : undefined
             });
+            logger.info(`Retrieved ${coopProducts.elements.length} products from Coop for term ${term}`);
             products = products.concat(coopProducts.elements.map((element) => mapCoopProductToCommonProduct(element)));
         } catch (e) {
             console.error(e);
+            if (axios.isAxiosError(e)) {
+                const error = e as AxiosError;
+                logger.error(`Error retrieving products from Coop for term ${term}: ${error.message}`);
+            }
             // Skip Coop
             stores.splice(stores.indexOf(Store.COOP), 1);
         }
@@ -190,9 +212,14 @@ const retrieveProducts = async (
                 const plusProducts = await Promise.all(
                     initialPlusProducts.items.map((item) => plus.product().getProductFromId(parseInt(item.itemno, 10)))
                 );
+                logger.info(`Retrieved ${plusProducts.length} products from Plus for term ${term}`);
                 products = products.concat(plusProducts.map((product) => mapPlusProductToCommonProduct(product)));
             } catch (e) {
                 console.error(e);
+                if (axios.isAxiosError(e)) {
+                    const error = e as AxiosError;
+                    logger.error(`Error retrieving products from Coop for term ${term}: ${error.message}`);
+                }
                 // Skip Plus
                 stores.splice(stores.indexOf(Store.PLUS), 1);
             }
@@ -278,6 +305,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const excludeSupermarkets = req.query.excludeSupermarkets as string;
     const diet = req.query.diet as string;
     const allergen = req.query.allergen as string;
+
+    logger.info(
+        `Received request: { term: ${term}, sort: ${sort}, excludeSupermarkets: ${excludeSupermarkets}, diet: ${diet}, allergen: ${allergen} }`
+    );
+
     const diets = translateDietQueryToDiet(diet);
     const allergens = translateAllergenQueryToAllergens(allergen);
     // Merge products
@@ -288,5 +320,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const filteredProducts = filterSupermarket(products, excludeSupermarkets);
     // Sort products
     const sortedCommonProducts = sortProducts(filteredProducts, sort);
+    logger.info(`Returning ${sortedCommonProducts.length} products for term ${term}`);
     res.status(200).json(sortedCommonProducts);
 }
